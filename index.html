@@ -1,162 +1,67 @@
 <!doctype html>
 <html lang="pt">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ViraPágina — Loja de Livros Digitais (MVP)</title>
-  <meta name="description" content="ViraPágina — Loja de livros digitais com downloads imediatos e amostras gratuitas." />
-  <style>
-    :root{--indigo:#4f46e5}*{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,Segoe UI,Roboto,Arial;color:#111}
-    .container{max-width:1100px;margin:0 auto;padding:16px}
-    .top{position:sticky;top:0;background:#fffcc;backdrop-filter:saturate(150%) blur(6px);border-bottom:1px solid #eee}
-    .brand{color:var(--indigo);font-weight:900;font-size:22px}
-    .row{display:flex;gap:12px;align-items:center}
-    input,select,button,textarea{padding:10px 12px;border:1px solid #ddd;border-radius:12px}
-    button{cursor:pointer}
-    .hero{background:linear-gradient(135deg,#eef2ff,#fff);padding:40px 0}
-    .hero h1{font-size:36px;line-height:1.1;margin:0 0 10px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-    .card{border:1px solid #eee;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.04)}
-    .card img{width:100%;height:280px;object-fit:cover;display:block;background:#f3f3f3}
-    .p16{padding:16px}.muted{color:#666}.price{font-weight:700}
-    .btn{background:var(--indigo);color:#fff;border:none}.btn:hover{filter:brightness(.95)}
-    .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}
-    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;place-items:center;padding:16px}
-    .modal{background:#fff;border-radius:16px;max-width:900px;width:100%;overflow:hidden}
-    .modal .row{justify-content:space-between}
-    .modal-body{display:grid;grid-template-columns:1fr 1fr}
-    .modal img{width:100%;height:100%;object-fit:cover}
-    .info{padding:16px}
-    .drawer{position:fixed;inset:0;display:none}
-    .drawer .shade{position:absolute;inset:0;background:rgba(0,0,0,.5)}
-    .drawer .panel{position:absolute;right:0;top:0;height:100%;width:min(420px,100%);background:#fff;display:flex;flex-direction:column}
-    .list{display:grid;gap:12px;overflow:auto;padding:16px}
-    .cart-item{display:flex;gap:12px;border:1px solid #eee;padding:12px;border-radius:12px}
-    .footer{border-top:1px solid #eee;margin-top:40px;padding:24px 0;color:#666;font-size:14px;text-align:center}
-    .badge{position:relative}
-    .badge i{position:absolute;right:-6px;top:-8px;background:var(--indigo);color:#fff;border-radius:999px;font-style:normal;font-size:11px;padding:2px 6px}
-    @media (max-width:800px){.modal-body{grid-template-columns:1fr}}
-  </style>
-</head>
-<body>
-  <header class="top">
-    <div class="container row" style="gap:16px;padding:12px 16px;">
-      <div class="brand">ViraPágina</div>
-      <nav class="row" style="gap:12px;font-size:14px;color:#666">
-        <a href="#catalogo">Catálogo</a><a href="#faq">FAQ</a>
-      </nav>
-      <div class="row" style="margin-left:auto;gap:8px;width:100%;max-width:520px">
-        <input id="q" placeholder="Procurar livros…" style="flex:1">
-        <button id="openCart" class="badge">🛒<i id="cartCount" style="display:none">0</i></button>
-      </div>
-    </div>
-  </header>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ViraPágina — Loja de Livros Digitais</title>
+<style>
+  body{margin:0;font:16px/1.5 system-ui,Segoe UI,Roboto,Arial}
+  header{position:sticky;top:0;background:#fff;border-bottom:1px solid #eee;padding:12px 16px}
+  .brand{color:#4f46e5;font-weight:900}
+  .container{max-width:1100px;margin:0 auto;padding:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+  .card{border:1px solid #eee;border-radius:14px;overflow:hidden;background:#fff}
+  .p16{padding:16px}
+  .muted{color:#666}
+  .btn{background:#4f46e5;color:#fff;border:none;border-radius:10px;padding:10px 12px;cursor:pointer;display:block;text-align:center;width:100%}
+  img{display:block;width:100%;height:240px;object-fit:cover;background:#f3f3f3}
+  footer{border-top:1px solid #eee}
+</style>
 
-  <section class="hero">
-    <div class="container">
-      <h1>Livros digitais para ler <span style="color:var(--indigo)">onde quiser</span></h1>
-      <p class="muted">Catálogo selecionado de ficção, fantasia, tecnologia e mais. Baixe em EPUB/PDF e comece agora.</p>
-    </div>
-  </section>
+<header><div class="container"><span class="brand">ViraPágina</span></div></header>
 
-  <main class="container">
-    <div class="toolbar">
-      <h2 id="catalogo">Catálogo</h2>
-      <div class="row" style="gap:8px">
-        <label class="muted" for="cat">Categoria:</label>
-        <select id="cat"></select>
-        <label class="muted" for="sort">Ordenar:</label>
-        <select id="sort">
-          <option value="popular">Mais populares</option>
-          <option value="price-asc">Preço: menor → maior</option>
-          <option value="price-desc">Preço: maior → menor</option>
-          <option value="alpha">Nome A-Z</option>
-        </select>
-      </div>
-    </div>
+<main class="container">
+  <h2>Catálogo</h2>
+  <div id="grid" class="grid"></div>
+</main>
 
-    <div id="grid" class="grid"></div>
+<footer class="container">© <span id="y"></span> ViraPágina.</footer>
 
-    <section id="faq" style="margin-top:28px">
-      <h3>Perguntas frequentes</h3>
-      <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
-        <div class="p16" style="border:1px solid #eee;border-radius:12px"><p><strong>Como recebo o meu livro?</strong></p><p class="muted">Após a compra, enviamos um link de download por e-mail (simulado neste MVP).</p></div>
-        <div class="p16" style="border:1px solid #eee;border-radius:12px"><p><strong>Quais formatos estão disponíveis?</strong></p><p class="muted">EPUB e PDF na maioria dos títulos. Este MVP é demonstrativo.</p></div>
-        <div class="p16" style="border:1px solid #eee;border-radius:12px"><p><strong>Posso ler uma amostra?</strong></p><p class="muted">Sim! Abra o livro e clique em <em>Ler amostra</em>.</p></div>
-        <div class="p16" style="border:1px solid #eee;border-radius:12px"><p><strong>Posso pedir reembolso?</strong></p><p class="muted">Sim, em até 7 dias para compras digitais não baixadas (política demonstrativa).</p></div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Modal Livro -->
-  <div id="modal" class="modal-bg">
-    <div class="modal">
-      <div class="modal-body">
-        <div><img id="mCover" alt="capa" /></div>
-        <div class="info">
-          <div class="row"><h3 id="mTitle" style="margin:0"></h3><button id="mClose">✕</button></div>
-          <p class="muted" id="mAuthor"></p>
-          <p id="mDesc" class="muted"></p>
-          <p><strong id="mPrice"></strong> <span class="muted" id="mRating"></span></p>
-          <div class="row" style="gap:8px;margin-top:8px">
-            <button class="btn" id="mAdd">Adicionar ao carrinho</button>
-            <button id="mPreviewBtn">Ler amostra</button>
-          </div>
-          <pre id="mPreview" style="white-space:pre-wrap;background:#fafafa;border:1px solid #eee;border-radius:12px;padding:12px;display:none;margin-top:12px"></pre>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Drawer Carrinho -->
-  <div id="drawer" class="drawer">
-    <div class="shade" id="dShade"></div>
-    <div class="panel">
-      <div class="row" style="justify-content:space-between;border-bottom:1px solid #eee;padding:12px 16px">
-        <strong>Seu carrinho</strong>
-        <button id="dClose">Fechar</button>
-      </div>
-      <div id="dList" class="list"></div>
-      <div style="border-top:1px solid #eee;padding:12px 16px">
-        <div class="row" style="justify-content:space-between">
-          <span>Subtotal</span><strong id="dSubtotal">€0,00</strong>
-        </div>
-        <button id="dCheckout" class="btn" style="width:100%;margin-top:8px">Finalizar compra</button>
-      </div>
-    </div>
-  </div>
-
-  <footer class="footer">© <span id="y"></span> ViraPágina. Todos os direitos reservados.</footer>
 <script>
- 
-  const PHONE = "+352691972207";
+  // >>> TROQUE pelo seu número (código do país + número, sem + nem espaços)
+  // Portugal exemplo: 351912345678 | Brasil exemplo: 5591999999999
+  const PHONE = "351912345678";
 
-  const BOOKS=[
-    {id:"1",title:"A Cidade das Névoas",author:"L. Andrade",price:9.9,rating:4.7,cover:"https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop"},
-    {id:"2",title:"Manual Prático de React",author:"C. Nogueira",price:14.5,rating:4.8,cover:"https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop"}
+  const BOOKS = [
+    {id:"1", title:"A Cidade das Névoas", author:"L. Andrade", price:9.9, rating:4.7,
+     cover:"https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop"},
+    {id:"2", title:"Manual Prático de React", author:"C. Nogueira", price:14.5, rating:4.8,
+     cover:"https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop"}
   ];
 
-  const € = n => new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR"}).format(n);
-  const wa = (b) => `https://wa.me/${PHONE}?text=${encodeURIComponent(`Olá! Quero comprar "${b.title}" por ${€(b.price)}.`)}`;
+  function formatEUR(n){ return new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR"}).format(n); }
+  function waLink(b){
+    const msg = `Olá! Quero comprar "${b.title}" por ${formatEUR(b.price)}.`;
+    return `https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`;
+  }
 
-  const grid=document.getElementById('grid');
+  const grid = document.getElementById("grid");
   BOOKS.forEach(b=>{
-    const el=document.createElement('div');
-    el.className='card';
-    el.innerHTML=`
-      <img src="${b.cover}" alt="" style="width:100%;height:240px;object-fit:cover">
-      <div class="p16">
-        <h3 style="margin:0 0 4px 0">${b.title}</h3>
-        <p class="muted" style="margin:0">${b.author}</p>
-        <p style="display:flex;justify-content:space-between;margin:8px 0 0 0">
-          <span>${€(b.price)}</span><span class="muted">⭐ ${b.rating}</span>
-        </p>
-        <a class="btn" href="${wa(b)}" target="_blank" rel="noopener">Comprar no WhatsApp</a>
-      </div>`;
+    const el = document.createElement("div");
+    el.className = "card";
+    el.innerHTML = [
+      `<img src="${b.cover}" alt="">`,
+      `<div class="p16">`,
+      `  <h3 style="margin:0 0 4px 0">${b.title}</h3>`,
+      `  <p class="muted" style="margin:0">${b.author}</p>`,
+      `  <p style="display:flex;justify-content:space-between;margin:8px 0 12px 0">`,
+      `    <span>${formatEUR(b.price)}</span><span class="muted">⭐ ${b.rating}</span>`,
+      `  </p>`,
+      `  <a class="btn" href="${waLink(b)}" target="_blank" rel="noopener">Comprar no WhatsApp</a>`,
+      `</div>`
+    ].join("\n");
     grid.appendChild(el);
   });
-  document.getElementById('y').textContent=new Date().getFullYear();
-</script>
 
-</body>
+  document.getElementById("y").textContent = new Date().getFullYear();
+</script>
 </html>
