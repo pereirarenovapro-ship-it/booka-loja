@@ -1,85 +1,145 @@
 <!doctype html>
 <html lang="pt">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ViraPágina — Loja de Livros Digitais</title>
-<style>
-  body{margin:0;font:16px/1.5 system-ui,Segoe UI,Roboto,Arial}
-  header{position:sticky;top:0;background:#fff;border-bottom:1px solid #eee;padding:12px 16px}
-  .brand{color:#4f46e5;font-weight:900}
-  .container{max-width:1100px;margin:0 auto;padding:16px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-  .card{border:1px solid #eee;border-radius:14px;overflow:hidden;background:#fff}
-  .p16{padding:16px}
-  .muted{color:#666}
-  .btn{background:#4f46e5;color:#fff;border:none;border-radius:10px;padding:10px 12px;cursor:pointer;display:block;text-align:center;width:100%}
-  img{display:block;width:100%;height:240px;object-fit:cover;background:#f3f3f3}
-  footer{border-top:1px solid #eee}
-</style>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ViraPágina — Loja de Livros Digitais</title>
+  <meta name="description" content="ViraPágina — Livros digitais de ficção, finanças e renda online. Baixe já.">
+  <style>
+    :root{--indigo:#4f46e5}
+    *{box-sizing:border-box}
+    body{margin:0;font:16px/1.5 system-ui,Segoe UI,Roboto,Arial;color:#111;background:#fff}
+    header{position:sticky;top:0;background:#fff;border-bottom:1px solid #eee}
+    .container{max-width:1100px;margin:0 auto;padding:12px 16px}
+    .brand{color:var(--indigo);font-weight:900}
+    .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-top:8px}
+    input,select,button{padding:10px 12px;border:1px solid #ddd;border-radius:12px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;padding:16px}
+    .card{border:1px solid #eee;border-radius:14px;overflow:hidden;background:#fff}
+    .p16{padding:16px}
+    .muted{color:#666}
+    .btn{background:var(--indigo);color:#fff;border:none;border-radius:10px;padding:10px 12px;cursor:pointer;display:block;text-align:center;width:100%}
+    img{display:block;width:100%;height:240px;object-fit:cover;background:#f3f3f3}
+    footer{border-top:1px solid #eee}
+    @media (max-width:640px){ .toolbar{flex-direction:column;align-items:stretch} .toolbar > *{width:100%} }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="brand">ViraPágina</div>
+      <div class="toolbar">
+        <input id="q" placeholder="Procurar por título ou autor…" aria-label="Procurar">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <select id="cat" aria-label="Categoria"></select>
+          <select id="sort" aria-label="Ordenar">
+            <option value="popular">Mais populares</option>
+            <option value="price-asc">Preço: menor → maior</option>
+            <option value="price-desc">Preço: maior → menor</option>
+            <option value="alpha">Nome A–Z</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </header>
 
-<header><div class="container"><span class="brand">ViraPágina</span></div></header>
+  <main class="container" style="padding:0">
+    <div id="grid" class="grid"></div>
+  </main>
 
-<main class="container">
-  <h2>Catálogo</h2>
-  <div id="grid" class="grid"></div>
-</main>
+  <footer class="container">© <span id="y"></span> ViraPágina.</footer>
 
-<footer class="container">© <span id="y"></span> ViraPágina.</footer>
+  <script>
+    // WhatsApp (código do país + número, sem + e sem 00)
+    const PHONE = "352691972207";
 
-<script>
-  // WhatsApp (código do país + número, sem + e sem 00)
-  const PHONE = "352691972207";
+    // Catálogo com categorias (20 livros)
+    const BOOKS = [
+      {id:"1",  title:"A Cidade das Névoas",         author:"L. Andrade",   price:9.9,  rating:4.7, category:"Ficção",        cover:"https://picsum.photos/seed/ficcao1/800/600"},
+      {id:"2",  title:"Manual Prático de React",      author:"C. Nogueira",  price:14.5, rating:4.8, category:"Tecnologia",    cover:"https://picsum.photos/seed/tech1/800/600"},
+      {id:"3",  title:"O Mago de Âmbar",              author:"V. Soares",    price:11.9, rating:4.5, category:"Fantasia",      cover:"https://picsum.photos/seed/fantasia1/800/600"},
+      {id:"4",  title:"Estratégia em 30 Dias",        author:"M. Carvalho",  price:12.0, rating:4.2, category:"Negócios",      cover:"https://picsum.photos/seed/negocios1/800/600"},
+      {id:"5",  title:"Respirar Melhor",              author:"N. Freitas",   price:7.5,  rating:4.3, category:"Não-ficção",    cover:"https://picsum.photos/seed/naoficcao1/800/600"},
+      {id:"6",  title:"Design de Capas Cativantes",   author:"A. Ramos",     price:10.9, rating:4.6, category:"Tecnologia",    cover:"https://picsum.photos/seed/design1/800/600"},
+      {id:"7",  title:"O Último Farol",               author:"R. Almeida",   price:8.9,  rating:4.1, category:"Ficção",        cover:"https://picsum.photos/seed/ficcao2/800/600"},
+      {id:"8",  title:"Copywriting Essencial",        author:"S. P. Lima",   price:9.5,  rating:4.4, category:"Marketing",     cover:"https://picsum.photos/seed/copy1/800/600"},
+      {id:"9",  title:"Atlas do Dev",                 author:"B. Teixeira",  price:13.9, rating:4.9, category:"Tecnologia",    cover:"https://picsum.photos/seed/tech2/800/600"},
+      {id:"10", title:"Crônicas do Bosque",           author:"I. Matos",     price:6.9,  rating:4.0, category:"Fantasia",      cover:"https://picsum.photos/seed/fantasia2/800/600"},
+      // Finanças & renda online
+      {id:"11", title:"Finanças Pessoais em 30 Dias",     author:"D. Martins",   price:12.9, rating:4.6, category:"Finanças",       cover:"https://picsum.photos/seed/finance1/800/600"},
+      {id:"12", title:"Investir com Pouco",               author:"R. Couto",     price:11.5, rating:4.5, category:"Finanças",       cover:"https://picsum.photos/seed/finance2/800/600"},
+      {id:"13", title:"Guia Prático de Renda Online",     author:"A. Rocha",     price:13.0, rating:4.7, category:"Renda Online",   cover:"https://picsum.photos/seed/online1/800/600"},
+      {id:"14", title:"Freelancer 360",                   author:"M. Santos",    price:9.9,  rating:4.4, category:"Renda Online",   cover:"https://picsum.photos/seed/freelance1/800/600"},
+      {id:"15", title:"Marketing Digital Descomplicado",  author:"B. Ribeiro",   price:12.5, rating:4.6, category:"Marketing",      cover:"https://picsum.photos/seed/marketing1/800/600"},
+      {id:"16", title:"E-commerce do Zero",               author:"P. Andrade",   price:14.9, rating:4.7, category:"Renda Online",   cover:"https://picsum.photos/seed/ecommerce1/800/600"},
+      {id:"17", title:"YouTube Lucrativo",                author:"C. Figueiredo",price:10.9, rating:4.3, category:"Renda Online",   cover:"https://picsum.photos/seed/youtube1/800/600"},
+      {id:"18", title:"Instagram que Vende",              author:"J. Lima",      price:8.9,  rating:4.2, category:"Marketing",      cover:"https://picsum.photos/seed/instagram1/800/600"},
+      {id:"19", title:"Afiliados que Convertem",          author:"T. Carvalho",  price:11.9, rating:4.5, category:"Renda Online",   cover:"https://picsum.photos/seed/affiliate1/800/600"},
+      {id:"20", title:"Cripto sem Mistério",              author:"E. Nunes",     price:9.5,  rating:4.1, category:"Cripto",         cover:"https://picsum.photos/seed/crypto1/800/600"}
+    ];
 
-  // Catálogo (inclui finanças e renda online)
-  const BOOKS = [
-    {id:"1",  title:"A Cidade das Névoas",         author:"L. Andrade",  price:9.9,  rating:4.7, cover:"https://picsum.photos/seed/ficcao1/800/600"},
-    {id:"2",  title:"Manual Prático de React",      author:"C. Nogueira", price:14.5, rating:4.8, cover:"https://picsum.photos/seed/tech1/800/600"},
-    {id:"3",  title:"O Mago de Âmbar",              author:"V. Soares",   price:11.9, rating:4.5, cover:"https://picsum.photos/seed/fantasia1/800/600"},
-    {id:"4",  title:"Estratégia em 30 Dias",        author:"M. Carvalho",  price:12.0, rating:4.2, cover:"https://picsum.photos/seed/negocios1/800/600"},
-    {id:"5",  title:"Respirar Melhor",              author:"N. Freitas",   price:7.5,  rating:4.3, cover:"https://picsum.photos/seed/naoficcao1/800/600"},
-    {id:"6",  title:"Design de Capas Cativantes",   author:"A. Ramos",     price:10.9, rating:4.6, cover:"https://picsum.photos/seed/design1/800/600"},
-    {id:"7",  title:"O Último Farol",               author:"R. Almeida",   price:8.9,  rating:4.1, cover:"https://picsum.photos/seed/ficcao2/800/600"},
-    {id:"8",  title:"Copywriting Essencial",        author:"S. P. Lima",   price:9.5,  rating:4.4, cover:"https://picsum.photos/seed/copy1/800/600"},
-    {id:"9",  title:"Atlas do Dev",                 author:"B. Teixeira",  price:13.9, rating:4.9, cover:"https://picsum.photos/seed/tech2/800/600"},
-    {id:"10", title:"Crônicas do Bosque",           author:"I. Matos",     price:6.9,  rating:4.0, cover:"https://picsum.photos/seed/fantasia2/800/600"},
+    // Utilidades
+    function formatEUR(n){ return new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR"}).format(n); }
+    function waLink(b){
+      const msg = `Olá! Quero comprar "${b.title}" por ${formatEUR(b.price)}.`;
+      return `https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`;
+    }
 
-    // 👇 Finanças e renda online
-    {id:"11", title:"Finanças Pessoais em 30 Dias",     author:"D. Martins",  price:12.9, rating:4.6, cover:"https://picsum.photos/seed/finance1/800/600"},
-    {id:"12", title:"Investir com Pouco",               author:"R. Couto",    price:11.5, rating:4.5, cover:"https://picsum.photos/seed/finance2/800/600"},
-    {id:"13", title:"Guia Prático de Renda Online",     author:"A. Rocha",    price:13.0, rating:4.7, cover:"https://picsum.photos/seed/online1/800/600"},
-    {id:"14", title:"Freelancer 360",                   author:"M. Santos",   price:9.9,  rating:4.4, cover:"https://picsum.photos/seed/freelance1/800/600"},
-    {id:"15", title:"Marketing Digital Descomplicado",  author:"B. Ribeiro",  price:12.5, rating:4.6, cover:"https://picsum.photos/seed/marketing1/800/600"},
-    {id:"16", title:"E-commerce do Zero",               author:"P. Andrade",  price:14.9, rating:4.7, cover:"https://picsum.photos/seed/ecommerce1/800/600"},
-    {id:"17", title:"YouTube Lucrativo",                author:"C. Figueiredo",price:10.9, rating:4.3, cover:"https://picsum.photos/seed/youtube1/800/600"},
-    {id:"18", title:"Instagram que Vende",              author:"J. Lima",     price:8.9,  rating:4.2, cover:"https://picsum.photos/seed/instagram1/800/600"},
-    {id:"19", title:"Afiliados que Convertem",          author:"T. Carvalho", price:11.9, rating:4.5, cover:"https://picsum.photos/seed/affiliate1/800/600"},
-    {id:"20", title:"Cripto sem Mistério",              author:"E. Nunes",    price:9.5,  rating:4.1, cover:"https://picsum.photos/seed/crypto1/800/600"}
-  ];
+    // Estado
+    const state = { q:"", cat:"Todos", sort:"popular" };
 
-  function formatEUR(n){ return new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR"}).format(n); }
-  function waLink(b){
-    const msg = `Olá! Quero comprar "${b.title}" por ${formatEUR(b.price)}.`;
-    return `https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`;
-  }
+    // Refs
+    const q    = document.getElementById("q");
+    const cat  = document.getElementById("cat");
+    const sort = document.getElementById("sort");
+    const grid = document.getElementById("grid");
 
-  const grid = document.getElementById("grid");
-  BOOKS.forEach(b=>{
-    const el = document.createElement("div");
-    el.className = "card";
-    el.innerHTML = [
-      `<img src="${b.cover}" alt="">`,
-      `<div class="p16">`,
-      `  <h3 style="margin:0 0 4px 0">${b.title}</h3>`,
-      `  <p class="muted" style="margin:0">${b.author}</p>`,
-      `  <p style="display:flex;justify-content:space-between;margin:8px 0 12px 0">`,
-      `    <span>${formatEUR(b.price)}</span><span class="muted">⭐ ${b.rating}</span>`,
-      `  </p>`,
-      `  <a class="btn" href="${waLink(b)}" target="_blank" rel="noopener">Comprar no WhatsApp</a>`,
-      `</div>`
-    ].join("\n");
-    grid.appendChild(el);
-  });
+    // Preenche categorias
+    const cats = ["Todos", ...Array.from(new Set(BOOKS.map(b=>b.category)))];
+    cats.forEach(c=>{ const o=document.createElement("option"); o.value=c; o.textContent=c; cat.appendChild(o); });
 
-  document.getElementById("y").textContent = new Date().getFullYear();
-</script>
+    // Render
+    function render(){
+      let list = BOOKS.filter(b =>
+        (state.cat==="Todos" || b.category===state.cat) &&
+        (`${b.title} ${b.author}`.toLowerCase().includes(state.q.toLowerCase()))
+      );
+      switch(state.sort){
+        case "price-asc": list.sort((a,b)=>a.price-b.price); break;
+        case "price-desc": list.sort((a,b)=>b.price-a.price); break;
+        case "alpha": list.sort((a,b)=>a.title.localeCompare(b.title)); break;
+        default: list.sort((a,b)=>b.rating-a.rating); // populares
+      }
+      grid.innerHTML = "";
+      if (!list.length){
+        const p=document.createElement("p"); p.textContent="Nenhum livro encontrado."; p.className="muted p16"; grid.appendChild(p);
+        return;
+      }
+      list.forEach(b=>{
+        const el = document.createElement("div");
+        el.className = "card";
+        el.innerHTML = `
+          <img src="${b.cover}" alt="">
+          <div class="p16">
+            <h3 style="margin:0 0 4px 0">${b.title}</h3>
+            <p class="muted" style="margin:0">${b.author}</p>
+            <p style="display:flex;justify-content:space-between;margin:8px 0 12px 0">
+              <span>${formatEUR(b.price)}</span><span class="muted">⭐ ${b.rating}</span>
+            </p>
+            <a class="btn" href="${waLink(b)}" target="_blank" rel="noopener">Comprar no WhatsApp</a>
+          </div>`;
+        grid.appendChild(el);
+      });
+    }
+
+    // Eventos
+    q.oninput = e=>{ state.q = e.target.value; render(); };
+    cat.onchange = e=>{ state.cat = e.target.value; render(); };
+    sort.onchange = e=>{ state.sort = e.target.value; render(); };
+
+    document.getElementById("y").textContent = new Date().getFullYear();
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", render, {once:true});
+    else render();
+  </script>
+</body>
 </html>
