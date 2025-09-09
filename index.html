@@ -243,46 +243,46 @@
       if(i<0) return; state.cart[i].qty++;
       renderCart(); render();
     }
-    function renderCart(){
-      dList.innerHTML=""; let subtotal=0;
-      state.cart.forEach(it=>{
-        subtotal += it.price*it.qty;
-        const row = document.createElement("div");
-        row.className="cart-item";
-        row.innerHTML = `
-          <img src="${it.cover}" alt="" style="width:64px;height:80px;object-fit:cover;border-radius:8px">
-          <div style="flex:1">
-            <div style="display:flex;justify-content:space-between;gap:8px">
-              <strong>${it.title}</strong>
-              <span class="muted">${€(it.price)}</span>
-            </div>
-            <div class="row" style="gap:8px;margin-top:6px">
-              <button data-minus="${it.id}">−</button>
-              <span>${it.qty}</span>
-              <button data-plus="${it.id}">+</button>
-            </div>
-          </div>`;
-        row.querySelector("[data-minus]").onclick = ()=>minusFromCart(it.id);
-        row.querySelector("[data-plus]").onclick = ()=>plusInCart(it.id);
-        dList.appendChild(row);
-      });
-      dSubtotal.textContent = €(subtotal);
-    }
+<script>
+  function renderCart(){
+    dList.innerHTML = "";
+    let subtotal = 0;
+    state.cart.forEach(it=>{
+      subtotal += it.price * it.qty;
+      const row = document.createElement("div");
+      row.className = "cart-item";
+      row.innerHTML = `
+        <img src="${it.cover}" alt="" style="width:64px;height:80px;object-fit:cover;border-radius:8px">
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;gap:8px">
+            <strong>${it.title}</strong>
+            <span class="muted">${formatEUR(it.price)}</span>
+          </div>
+          <div class="row" style="gap:8px;margin-top:6px">
+            <button data-minus="${it.id}">−</button>
+            <span>${it.qty}</span>
+            <button data-plus="${it.id}">+</button>
+          </div>
+        </div>`;
+      row.querySelector("[data-minus]").onclick = ()=>minusFromCart(it.id);
+      row.querySelector("[data-plus]").onclick = ()=>plusInCart(it.id);
+      dList.appendChild(row);
+    });
+    dSubtotal.textContent = formatEUR(subtotal);
+  }
 
-    q.oninput = e=>{ state.q=e.target.value; render(); };
-    cat.onchange = e=>{ state.cat=e.target.value; render(); };
-    sort.onchange= e=>{ state.sort=e.target.value; render(); };
-    document.getElementById("openCart").onclick = openCart;
-    document.getElementById("dShade").onclick = document.getElementById("dClose").onclick = closeCart;
-    document.getElementById("mClose").onclick = closeModal;
-    document.getElementById("dCheckout").onclick = ()=>{
-      alert("Pagamento simulado! Enviaremos um link de download por e-mail.");
-      state.cart=[]; render(); closeCart();
-    };
+  // ... (resto do seu JS)
 
-    document.getElementById("y").textContent = new Date().getFullYear();
+  document.getElementById("y").textContent = new Date().getFullYear();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", render, { once: true });
+  } else {
     render();
-  <script>
+  }
+</script>
+</body>
+</html>
+
   // ----- Dados -----
   const CATEGORIES = ["Todos","Ficção","Fantasia","Tecnologia","Negócios","Não-ficção"];
   const BOOKS = [
