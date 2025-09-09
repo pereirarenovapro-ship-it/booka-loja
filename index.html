@@ -27,15 +27,33 @@
 <footer class="container">© <span id="y"></span> ViraPágina.</footer>
 
 <script>
-  // >>> TROQUE pelo seu número (código do país + número, sem + nem espaços)
-  // Portugal exemplo: 351912345678 | Brasil exemplo: 5591999999999
-  const PHONE = "351912345678";
+  // WhatsApp (código do país + número, sem + e sem 00)
+  const PHONE = "352691972207";
 
+  // Catálogo (inclui finanças e renda online)
   const BOOKS = [
-    {id:"1", title:"A Cidade das Névoas", author:"L. Andrade", price:9.9, rating:4.7,
-     cover:"https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop"},
-    {id:"2", title:"Manual Prático de React", author:"C. Nogueira", price:14.5, rating:4.8,
-     cover:"https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop"}
+    {id:"1",  title:"A Cidade das Névoas",         author:"L. Andrade",  price:9.9,  rating:4.7, cover:"https://picsum.photos/seed/ficcao1/800/600"},
+    {id:"2",  title:"Manual Prático de React",      author:"C. Nogueira", price:14.5, rating:4.8, cover:"https://picsum.photos/seed/tech1/800/600"},
+    {id:"3",  title:"O Mago de Âmbar",              author:"V. Soares",   price:11.9, rating:4.5, cover:"https://picsum.photos/seed/fantasia1/800/600"},
+    {id:"4",  title:"Estratégia em 30 Dias",        author:"M. Carvalho",  price:12.0, rating:4.2, cover:"https://picsum.photos/seed/negocios1/800/600"},
+    {id:"5",  title:"Respirar Melhor",              author:"N. Freitas",   price:7.5,  rating:4.3, cover:"https://picsum.photos/seed/naoficcao1/800/600"},
+    {id:"6",  title:"Design de Capas Cativantes",   author:"A. Ramos",     price:10.9, rating:4.6, cover:"https://picsum.photos/seed/design1/800/600"},
+    {id:"7",  title:"O Último Farol",               author:"R. Almeida",   price:8.9,  rating:4.1, cover:"https://picsum.photos/seed/ficcao2/800/600"},
+    {id:"8",  title:"Copywriting Essencial",        author:"S. P. Lima",   price:9.5,  rating:4.4, cover:"https://picsum.photos/seed/copy1/800/600"},
+    {id:"9",  title:"Atlas do Dev",                 author:"B. Teixeira",  price:13.9, rating:4.9, cover:"https://picsum.photos/seed/tech2/800/600"},
+    {id:"10", title:"Crônicas do Bosque",           author:"I. Matos",     price:6.9,  rating:4.0, cover:"https://picsum.photos/seed/fantasia2/800/600"},
+
+    // 👇 Finanças e renda online
+    {id:"11", title:"Finanças Pessoais em 30 Dias",     author:"D. Martins",  price:12.9, rating:4.6, cover:"https://picsum.photos/seed/finance1/800/600"},
+    {id:"12", title:"Investir com Pouco",               author:"R. Couto",    price:11.5, rating:4.5, cover:"https://picsum.photos/seed/finance2/800/600"},
+    {id:"13", title:"Guia Prático de Renda Online",     author:"A. Rocha",    price:13.0, rating:4.7, cover:"https://picsum.photos/seed/online1/800/600"},
+    {id:"14", title:"Freelancer 360",                   author:"M. Santos",   price:9.9,  rating:4.4, cover:"https://picsum.photos/seed/freelance1/800/600"},
+    {id:"15", title:"Marketing Digital Descomplicado",  author:"B. Ribeiro",  price:12.5, rating:4.6, cover:"https://picsum.photos/seed/marketing1/800/600"},
+    {id:"16", title:"E-commerce do Zero",               author:"P. Andrade",  price:14.9, rating:4.7, cover:"https://picsum.photos/seed/ecommerce1/800/600"},
+    {id:"17", title:"YouTube Lucrativo",                author:"C. Figueiredo",price:10.9, rating:4.3, cover:"https://picsum.photos/seed/youtube1/800/600"},
+    {id:"18", title:"Instagram que Vende",              author:"J. Lima",     price:8.9,  rating:4.2, cover:"https://picsum.photos/seed/instagram1/800/600"},
+    {id:"19", title:"Afiliados que Convertem",          author:"T. Carvalho", price:11.9, rating:4.5, cover:"https://picsum.photos/seed/affiliate1/800/600"},
+    {id:"20", title:"Cripto sem Mistério",              author:"E. Nunes",    price:9.5,  rating:4.1, cover:"https://picsum.photos/seed/crypto1/800/600"}
   ];
 
   function formatEUR(n){ return new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR"}).format(n); }
